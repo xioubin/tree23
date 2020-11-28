@@ -7,6 +7,9 @@
 
 #ifndef tree23_h
 #define tree23_h
+#include <iostream>
+#include <algorithm>
+#include <vector>
 
 typedef struct node{
     int leftdata;
@@ -17,6 +20,7 @@ typedef struct node{
     struct node* rightchild;
     node();
     node(int data);
+    node(int data1,int data2);
 }Node;
 
 class tree23{
@@ -27,6 +31,7 @@ public:
     tree23();
     tree23(Node* root);
     void insert(int data, Node* currentNode);
+    void merge(Node* currentNode,int data);
     
 };
 

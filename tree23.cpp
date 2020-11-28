@@ -25,6 +25,7 @@ node::node(int data){
     this->rightdata=-1;
 }
 
+
 tree23::tree23(){
     this->root=nullptr;
 }
@@ -52,14 +53,28 @@ void tree23::insert(int data, Node* currentNode){
         }
         //step 2: if node has one data -> second data insert
         else{
-            if(currentNode->rightdata==-1){
-                currentNode->rightdata=data;
+            if(currentNode->rightdata==-1 && currentNode->leftdata!=-1){
+                currentNode->rightdata=std::max(currentNode->leftdata,data);
+                currentNode->leftdata=std::min(currentNode->leftdata,data);
+            }
+            if(currentNode->leftdata==-1 && currentNode->rightdata!=-1){
+                currentNode->leftdata=std::min(currentNode->rightdata,data);
+                currentNode->rightdata=std::max(currentNode->rightdata,data);
             }
             else{
-                
+                //step 3: if data == 2 -> min,max of three =child, mid of three = parent
+                merge(currentNode,data);
             }
         }
     }
-    
-    //step 3: if data == 2 -> min,max of three =child, mid of three = parent
+}
+
+
+void tree23::merge(Node* currentNode, int data){
+    std::vector<int> compare{currentNode->leftdata,currentNode->rightdata,data};
+    std::sort(compare.begin(),compare.end());
+    Node* N=new Node(compare[1]);
+    N->leftchild=new Node(compare[0]);
+    N->rightchild=new Node(compare[2]);
+    insert(compare[1],currentNode->parent);
 }
