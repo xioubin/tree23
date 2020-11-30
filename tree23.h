@@ -10,29 +10,33 @@
 #include <iostream>
 #include <algorithm>
 #include <vector>
+#include <sstream>
 
-typedef struct node{
+typedef struct Node{
     int leftdata;
     int rightdata;
-    struct node* parent;
-    struct node* leftchild;
-    struct node* midchild;
-    struct node* rightchild;
-    node();
-    node(int data);
-    node(int data1,int data2);
+    int extradata;
+    bool full;
+    struct Node* parent;
+    struct Node* leftchild;
+    struct Node* midchild;
+    struct Node* rightchild;
+    Node();
+    Node(int data);
+    
 }Node;
 
 class tree23{
 private:
 public:
-    node* root;
+    Node* root;
     
     tree23();
     tree23(Node* root);
-    void insert(int data, Node* currentNode);
-    void merge(Node* currentNode,int data);
-    
+    void split(Node*& n_parent, Node*& parent_parent);
+    void split(Node*& Node);
+    void insert(Node*& root, int data);
+    void traverse(Node* node, std::vector < std::vector< std::vector <int> > >& level_numbers, int level);
 };
 
 #endif /* tree23_h */
