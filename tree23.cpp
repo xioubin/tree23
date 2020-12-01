@@ -49,9 +49,8 @@ void tree23::split(Node*& currentNode, Node*& currentNode_papa) {
         if (!currentNode_papa->full) {
             currentNode_papa->full = true;
             if (currentNode_papa->leftdata > currentNode->leftdata) {
-                
-                currentNode_papa->leftdata = currentNode->leftdata;
                 currentNode_papa->rightdata = currentNode_papa->leftdata;
+                currentNode_papa->leftdata = currentNode->leftdata;
                 
                 currentNode_papa->rightchild = currentNode_papa->midchild;
                 currentNode_papa->leftchild = currentNode->leftchild;
@@ -180,7 +179,7 @@ void tree23::split(Node*& currentNode) {
             root->midchild = right;
             left->parent = root;
             right->parent = root;
-            split(root, root->parent);
+            split(root, currentNode->parent);
         }
     }
 }
@@ -191,9 +190,9 @@ void tree23::insert(Node*& currentNode, int data) {
         return;
     }
     //if has child
-    if (currentNode->leftchild!=nullptr||
-        currentNode->midchild!=nullptr||
-        currentNode->rightchild!=nullptr) {
+    if (currentNode->leftchild != nullptr ||
+        currentNode->midchild != nullptr ||
+        currentNode->rightchild != nullptr) {
         if (data > currentNode->leftdata) {
             if (!currentNode->full || data <= currentNode->rightdata) {
                 insert(currentNode->midchild, data);
