@@ -21,15 +21,17 @@ int main() {
     for (int i = 0; i < number_string.size(); i++) {
         input[i] = stoi(number_string[i]);
     }
-
-    Node* root = new Node();
-    root->leftdata=input[0];
-    tree23 tree=tree23(root);
+    /*for(int i=0;i<input.size();i++){
+        std::cout<<input[i]<<" ";
+    }
+    std::cout<<"\n";*/
+    Node* root = new Node(input[0]);
+    tree23 tree = tree23(root);
     for (int i = 1; i < input.size(); ++i) {
         tree.insert(tree.root, input[i]);
     }
 
-    std::vector < std::vector< std::vector <int> > > level_numbers;
+    std::vector < std::vector< std::vector <int>>> level_numbers;
     tree.traverse(tree.root, level_numbers, 1);
 
     for (int i = 0; i < level_numbers.size(); ++i) {

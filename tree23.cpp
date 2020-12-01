@@ -7,7 +7,7 @@
 
 #include "tree23.h"
 
-Node::Node(){
+Node::node(){
     this->leftchild=nullptr;
     this->rightchild=nullptr;
     this->midchild=nullptr;
@@ -15,9 +15,10 @@ Node::Node(){
     this->full=false;
     this->leftdata=-1;
     this->rightdata=-1;
+    this->extradata=-1;
 }
 
-Node::Node(int data){
+Node::node(int data){
     this->leftchild=nullptr;
     this->rightchild=nullptr;
     this->midchild=nullptr;
@@ -25,7 +26,10 @@ Node::Node(int data){
     this->full=false;
     this->leftdata=data;
     this->rightdata=-1;
+    this->extradata=-1;
 }
+
+Node::~node(){}
 
 tree23::tree23(){
     this->root=nullptr;
@@ -35,41 +39,48 @@ tree23::tree23(Node* root){
     this->root=root;
 }
 
+tree23::~tree23(){}
+
 void tree23::split(Node*& currentNode, Node*& currentNode_papa) {
-    if (!currentNode_papa) {
+    if (currentNode_papa==nullptr) {
         this->root = currentNode;
     }
     else {
         if (!currentNode_papa->full) {
             currentNode_papa->full = true;
             if (currentNode_papa->leftdata > currentNode->leftdata) {
-                currentNode_papa->rightdata = currentNode_papa->leftdata;
+                
                 currentNode_papa->leftdata = currentNode->leftdata;
-                currentNode_papa->midchild = currentNode_papa->midchild;
+                currentNode_papa->rightdata = currentNode_papa->leftdata;
+                
+                currentNode_papa->rightchild = currentNode_papa->midchild;
                 currentNode_papa->leftchild = currentNode->leftchild;
                 currentNode_papa->midchild = currentNode->midchild;
+                
                 currentNode_papa->leftchild->parent = currentNode_papa;
                 currentNode_papa->midchild->parent = currentNode_papa;
             }
             else {
                 currentNode_papa->rightdata = currentNode->leftdata;
+                
                 currentNode_papa->midchild = currentNode->leftchild;
-                currentNode_papa->midchild = currentNode->midchild;
+                currentNode_papa->rightchild = currentNode->midchild;
+                
                 currentNode_papa->midchild->parent = currentNode_papa;
-                currentNode_papa->midchild->parent = currentNode_papa;
+                currentNode_papa->rightchild->parent = currentNode_papa;
             }
         }
         else {
             if (currentNode->leftdata < currentNode_papa->leftdata) { //left children split
-                Node* root = new Node();
-                root->leftdata = currentNode_papa->leftdata;
+                Node* root = new Node(currentNode_papa->leftdata);
                 Node* left = currentNode;
-                Node* right = new Node();
-                right->leftdata = currentNode_papa->rightdata;
+                Node* right = new Node(currentNode_papa->rightdata);
                 right->leftchild = currentNode_papa->midchild;
-                right->midchild = currentNode_papa->midchild;
-                if (right->leftchild) right->leftchild->parent = right;
-                if (right->midchild) right->midchild->parent = right;
+                right->midchild = currentNode_papa->rightchild;
+                if (right->leftchild!=nullptr)
+                    right->leftchild->parent = right;
+                if (right->midchild!=nullptr)
+                    right->midchild->parent = right;
                 root->leftchild = left;
                 root->midchild = right;
                 left->parent = root;
@@ -78,18 +89,20 @@ void tree23::split(Node*& currentNode, Node*& currentNode_papa) {
             }
             else if (currentNode->leftdata < currentNode_papa->rightdata) {
                 Node* root = currentNode;
-                Node* left = new Node();
-                Node* right = new Node();
-                left->leftdata = currentNode_papa->leftdata;
-                right->leftdata = currentNode_papa->rightdata;
+                Node* left = new Node(currentNode_papa->leftdata);
+                Node* right = new Node(currentNode_papa->rightdata);
                 left->leftchild = currentNode_papa->leftchild;
                 left->midchild = currentNode->leftchild;
-                if (left->leftchild) left->leftchild->parent = left;
-                if (left->midchild) left->midchild->parent = left;
+                if (left->leftchild!=nullptr)
+                    left->leftchild->parent = left;
+                if (left->midchild!=nullptr)
+                    left->midchild->parent = left;
                 right->leftchild = currentNode->midchild;
-                right->midchild = currentNode_papa->midchild;
-                if (right->leftchild) right->leftchild->parent = right;
-                if (right->midchild) right->midchild->parent = right;
+                right->midchild = currentNode_papa->rightchild;
+                if (right->leftchild!=nullptr)
+                    right->leftchild->parent = right;
+                if (right->midchild!=nullptr)
+                    right->midchild->parent = right;
                 root->leftchild = left;
                 root->midchild = right;
                 root->parent = currentNode_papa->parent;
@@ -98,15 +111,15 @@ void tree23::split(Node*& currentNode, Node*& currentNode_papa) {
                 split(root, currentNode_papa->parent);
             }
             else {
-                Node* root = new Node();
-                root->leftdata = currentNode_papa->rightdata;
-                Node* left = new Node();
+                Node* root = new Node(currentNode_papa->rightdata);
+                Node* left = new Node(currentNode_papa->leftdata);
                 Node* right = currentNode;
-                left->leftdata = currentNode_papa->leftdata;
                 left->leftchild = currentNode_papa->leftchild;
                 left->midchild = currentNode_papa->midchild;
-                if (left->leftchild) left->leftchild->parent = left;
-                if (left->midchild) left->midchild->parent = left;
+                if (left->leftchild!=nullptr)
+                    left->leftchild->parent = left;
+                if (left->midchild!=nullptr)
+                    left->midchild->parent = left;
                 root->leftchild = left;
                 root->midchild = right;
                 left->parent = root;
@@ -119,8 +132,8 @@ void tree23::split(Node*& currentNode, Node*& currentNode_papa) {
 }
 
 void tree23::split(Node*& currentNode) {
-    if (currentNode == nullptr) return;
-    
+    if (currentNode == nullptr)
+        return;
     if (currentNode->parent == nullptr) {
         Node* root = new Node(currentNode->extradata);
         Node* left = new Node(currentNode->leftdata);
@@ -154,7 +167,7 @@ void tree23::split(Node*& currentNode) {
                 left->parent = currentNode->parent;
                 mid->parent = currentNode->parent;
                 currentNode->parent->leftchild = left;
-                currentNode->parent->midchild = currentNode->parent->midchild;
+                currentNode->parent->rightchild = currentNode->parent->midchild;
                 currentNode->parent->midchild = mid;
             }
         }
@@ -174,8 +187,7 @@ void tree23::split(Node*& currentNode) {
 
 void tree23::insert(Node*& currentNode, int data) {
     if (currentNode == nullptr) {
-        currentNode = new Node();
-        currentNode->leftdata = data;
+        currentNode = new Node(data);
         return;
     }
     //if has child
@@ -187,7 +199,7 @@ void tree23::insert(Node*& currentNode, int data) {
                 insert(currentNode->midchild, data);
             }
             else if (currentNode->full && data > currentNode->rightdata) {
-                insert(currentNode->midchild, data);
+                insert(currentNode->rightchild, data);
             }
         }
         else {
@@ -229,25 +241,25 @@ void tree23::insert(Node*& currentNode, int data) {
     }
 }
 
-void tree23::traverse(Node* currentNode, std::vector < std::vector< std::vector <int> > >& output, int level) {
-    if (!currentNode)
+void tree23::traverse(Node* currentNode, std::vector < std::vector< std::vector <int>>>& output, int level) {
+    if (currentNode==nullptr)
         return;
-    else{
-        std::vector <int> numbers;
-        numbers.push_back(currentNode->leftdata);
-        if (currentNode->full) {
-            numbers.push_back(currentNode->rightdata);
-        }
-        if (output.size() >= level) {
-            output[level - 1].push_back(numbers);
-        }
-        else {
-            std::vector < std::vector <int> > current_level;
-            current_level.push_back(numbers);
-            output.push_back(current_level);
-        }
-        traverse(currentNode->leftchild, output, level + 1);
-        traverse(currentNode->midchild, output, level + 1);
-        traverse(currentNode->midchild, output, level + 1);
-        }
+    
+    std::vector <int> numbers;
+    numbers.push_back(currentNode->leftdata);
+    if (currentNode->full) {
+        numbers.push_back(currentNode->rightdata);
+    }
+    if (output.size() >= level) {
+        output[level - 1].push_back(numbers);
+    }
+    else {
+        std::vector < std::vector <int>> current_level;
+        current_level.push_back(numbers);
+        output.push_back(current_level);
+    }
+    traverse(currentNode->leftchild, output, level+1);
+    traverse(currentNode->midchild, output, level+1);
+    traverse(currentNode->rightchild, output, level+1);
+        
 }

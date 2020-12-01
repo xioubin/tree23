@@ -12,17 +12,18 @@
 #include <vector>
 #include <sstream>
 
-typedef struct Node{
+typedef struct node{
     int leftdata;
     int rightdata;
     int extradata;
     bool full;
-    struct Node* parent;
-    struct Node* leftchild;
-    struct Node* midchild;
-    struct Node* rightchild;
-    Node();
-    Node(int data);
+    struct node* parent;
+    struct node* leftchild;
+    struct node* midchild;
+    struct node* rightchild;
+    node();
+    node(int data);
+    ~node();
     
 }Node;
 
@@ -33,6 +34,7 @@ public:
     
     tree23();
     tree23(Node* root);
+    ~tree23();
     void split(Node*& n_parent, Node*& parent_parent);
     void split(Node*& Node);
     void insert(Node*& root, int data);
